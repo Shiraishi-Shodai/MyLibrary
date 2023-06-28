@@ -1,80 +1,20 @@
 <?php
 session_start();
 
+// DAO.php,USER.phpを読み込み
+require_once("../../../../Test_DB/db.php");
+require_once("../../../../Test_DB/User.php");
+require_once("../../../../Test_DB/Book.php");
+
 if (!isset($_SESSION["user_id"])) {
     header("Location: login.php");
     exit;
 }
 
-$user_id = isset($_SESSION["user_id"]) ? $_SESSION["user_id"] : "";
-$json_user_id = json_encode($user_id);
-$user_name = isset($_SESSION["user_name"]) ? $_SESSION["user_name"] : "";
-$user_type_name = isset($_SESSION["user_type_name"]) ? $_SESSION["user_type_name"] : "";
-$affiliation_name = isset($_SESSION["affiliation_name"]) ? $_SESSION["affiliation_name"] : "";
-$affiliation_id = isset($_SESSION["affiliation_id"]) ? $_SESSION["affiliation_id"] : "";
 
-// データベース接続情報
-$host = "localhost";
-$user = "root";
-$pwd = "pathSQL";
-$dbname = "library";
-// dsnは以下の形でどのデータベースかを指定する
-$dsn = "mysql:host={$host};port=3306;dbname={$dbname};";
-
-try {
-    //データベースに接続
-    $conn = new PDO($dsn, $user, $pwd);
-    // ログインしているユーザーが借りている本の情報を取得するためのSQL文
-    $sql = "SELECT l.user_id, b.book_id, b.book_name, b.author, b.publisher, b.remarks, b.image, l.lending_status
-                FROM book AS b
-                INNER JOIN lent AS l
-                ON l.book_id = b.book_id
-                WHERE b.affiliation_id = :affiliation_id AND l.user_id = :user_id AND l.lending_status = 'impossible'";
-
-    //SQL実行準備
-    $stmt = $conn->prepare($sql);
-    //:user_idにセッション変数から取得したuser_idを代入
-    $stmt->bindValue(":user_id", $user_id);
-    $stmt->bindValue(":affiliation_id", $affiliation_id);
-
-    //SQL文を実行
-    $stmt->execute();
-    //借りているの情報を変数resultに配列として代入
-    $lentNow = $stmt->fetchAll(PDO::FETCH_ASSOC);
-    //変数lentNowをJSON化してlentNowに代入
-    $lentNow = json_encode($lentNow);
-
-    // ログインしているユーザーのクラスで貸し出している本を取り出すSQL文
-    $sql = "SELECT l.user_id, b.book_id, b.book_name, b.author, b.publisher, b.remarks, b.image, l.lending_status
-                FROM book AS b
-                LEFT JOIN lent AS l
-                ON l.book_id = b.book_id
-                WHERE b.affiliation_id = :affiliation_id";
-    //SQL実行準備
-    $stmt = $conn->prepare($sql);
-    //:user_idにセッション変数から取得したuser_idを代入
-    $stmt->bindValue(":affiliation_id", $affiliation_id);
-    //SQL文を実行
-    $stmt->execute();
-
-    //所属しているクラス全ての本の情報を変数allBooksに配列として代入
-    $allBooks = $stmt->fetchAll(PDO::FETCH_ASSOC);
-    //変数allBooksをJSON化してallBooksに代入
-    $allBooks = json_encode($allBooks);
-
-    // ログインしているユーザーが所属しているクラスの全ての貸出中の本の名前とパスを取得するためのSQL文
-    $sql = "select book_id from book 
-       where book_id in(select book_id from lent where lending_status = 'impossible')";
-    //SQL文を実行
-    $stmt = $conn->query($sql);
-    //所属しているクラス全ての本の情報を変数allBooksに配列として代入
-    $lentBooks = $stmt->fetchAll(PDO::FETCH_ASSOC);
-    //変数allBooksをJSON化してallBooksに代入
-    $lentBooks = json_encode($lentBooks);
-} catch (PDOException $e) {
-    //データベースへの接続失敗
-    $e->getMessage();
-}
+$user_id =  $_SESSION["user_id"];
+$dao = new DAO();
+$user = $dao->getUser($user_id);
 
 ?>
 <!DOCTYPE html>
@@ -92,9 +32,9 @@ try {
         <div id="contents"><a href="Home.php">白石学園ポータルサイト</a>
         </div>
         <div id="login">
-            ログイン者:<?php echo $_SESSION["user_name"] ?><br>
-            区分:<?php echo $_SESSION["user_type_name"] ?><br>
-            学科:<?php echo $_SESSION["affiliation_name"] ?>
+            ログイン者:<?php echo $user->getUserName() ?><br>
+            区分:<?php echo $user->getAffiliationName() ?><br>
+            学科:<?php echo $user->getAffiliationName() ?>
         </div>
     </div>
 

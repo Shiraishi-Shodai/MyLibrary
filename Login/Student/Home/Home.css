@@ -1,0 +1,128 @@
+/*ヘッダー*/
+body{
+    margin:0;
+}
+
+.main{
+padding: 1px;
+background-color:	#3333FF;
+margin:0;
+}
+
+a{
+    color: #000000;
+    text-decoration: none;
+}
+
+.grayAdd{
+    filter : grayscale(1);
+}
+
+#contents{
+width:100%;
+font-size:40px;
+margin: 5px auto;
+color:#000000;
+}
+
+#login{
+position: absolute;
+top: 2px; /* #contents内の上から何pxか */
+left: 1120px; /* #contents内の左から何pxか */
+font-size:15px;
+margin: 10px auto;
+color:#000000;
+}
+
+/*パンくず*/
+.breadcrumb{
+list-style:none;
+padding: 0;
+margin: 0;
+}
+
+.breadcrumb li {
+display: inline;
+}
+
+.breadcrumb li:not(:last-child):after {
+content: "＞";
+margin: 0 5px;
+}
+
+/*image-container（借りてる本）*/
+.my-image-container {
+display: flex;
+flex-wrap: wrap;
+justify-content: center; 
+}
+
+.my-image-container .image-wrapper {
+display: flex;
+flex-direction: column;
+align-items: center; 
+margin: 3% 2%; 
+cursor: pointer; 
+}
+
+.my-image-container img {
+width: 230px;
+height: 280px;
+}
+
+.my-image-container .image-text {
+text-align: center;
+padding: 10px;
+white-space: pre-line; /* 改行を適用するための設定 */
+}
+
+/*image-container（借りてない本）*/
+.all-image-container {
+display: flex;
+flex-wrap: wrap;
+justify-content: center;
+}
+
+.all-image-container .image-wrapper {
+display: flex;
+flex-direction: column;
+align-items: center;
+margin: 3% 2%;
+cursor: pointer;
+}
+
+.all-image-container img {
+width: 230px;
+height: 280px;
+}
+
+.all-image-container .image-text {
+text-align: center;
+padding: 10px;
+white-space: pre-line;
+}
+
+/*検索*/
+.search {
+text-align: center;
+margin-bottom: 20px;
+margin: 20px;
+}
+
+.search-input {
+width: 300px;
+}
+
+.search-button {
+text-align: center;
+}
+
+/*履歴ボタン*/
+.history-button {
+width: 150px;
+height: 40px;
+float: right;
+margin : 10px;
+background: #00CC66;
+color: #FFF;
+}

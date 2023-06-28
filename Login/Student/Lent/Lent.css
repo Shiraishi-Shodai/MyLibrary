@@ -1,0 +1,196 @@
+@charset "UTF-8";
+/*ヘッダーのスタイル*/
+.main{
+  padding: 1px;
+  background-color:#ff8c00;
+  margin:0;
+}
+
+#contents{
+  width:100%;
+  font-size:40px;
+  margin: 5px auto;
+  color:#000000;
+}
+
+#login{
+  position: absolute;
+  top: 2px; /* #contents内の上から何pxか */
+  left: 1120px; /* #contents内の左から何pxか */
+  width:100%;
+  font-size:15px;
+  margin: 10px auto;
+  color:#000000;
+}
+/*パンくずリストのスタイル*/
+.breadcrumb{
+  list-style:none;
+  padding: 0;
+  margin: 0;
+  }
+.breadcrumb li {
+  display: inline;
+  }
+.breadcrumb li:not(:last-child):after {
+  content: "＞";
+  margin: 0 5px;
+  }
+
+  /*本の固定*/
+  .books{
+    display: flex;
+  }
+  
+  /*文字の位置*/
+  .text{
+    margin-top:50px;
+    margin-left:50px;
+    padding: 0;
+  }
+
+  /*本の大きさ*/
+  .example1{
+    width: 300px;
+    height: 400px;
+    padding-left: 50px;
+    padding-top: 20px;
+  }
+
+  /*ボタンのスタイル*/
+  .buttonContainer {
+    position: relative;
+  }
+  
+  #rentButton /*貸出ボタン*/{
+    position: absolute;
+    top: -10px; /* 上からの位置 */
+    left: 450px; /* 左からの位置 */
+    width: 350px; /* ボタンの幅 */
+    height: 55px; /* ボタンの高さ */
+    background-color: #007bff; /* ボタンの背景色 */
+    color: #fff; /* ボタンのテキスト色 */
+    border: none; /* ボタンのボーダーをなしにする */
+    border-radius: 10px; /* ボタンの角を丸める */
+    cursor: pointer; /* マウスカーソルをポインターにする */
+    margin-top: 20px; /* 上部の余白 */
+    margin-right: 10px; /* 右側の余白 */
+    font-size: 22px; /* テキストの大きさを変更する */
+  }
+  
+  #returnButton /*戻るボタン*/{
+    position: absolute;
+    top: -10px; /* 上からの位置 */
+    left: 850px; /* 左からの位置 */
+    width: 350px; /* ボタンの幅 */
+    height: 55px; /* ボタンの高さ */
+    background-color: #007bff; /* ボタンの背景色 */
+    color: #fff; /* ボタンのテキスト色 */
+    border: none; /* ボタンのボーダーをなしにする */
+    border-radius: 10px; /* ボタンの角を丸める */
+    cursor: pointer; /* マウスカーソルをポインターにする */
+    margin-top: 20px; /* 上部の余白 */
+    margin-right: 10px; /* 右側の余白 */
+    font-size: 22px; /* テキストの大きさを変更する */
+  }
+
+  
+  /*ダイアログボックスのスタイル*/
+  
+  .dialog {
+    display: none; /* ダイアログを非表示にする */
+    position: fixed; /* 固定位置に配置する */
+    z-index: 1; /* ダイアログが他の要素よりも前面に表示されるようにする */
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    overflow: auto; /* コンテンツが表示領域を超えた場合にスクロールバーを表示する */
+    background-color: rgba(0, 0, 0, 0.4); /* 背景色を半透明の黒にする */
+  }
+  #dialog2 {
+    display: none; /* ダイアログを非表示にする */
+    position: fixed; /* 固定位置に配置する */
+    z-index: 1; /* ダイアログが他の要素よりも前面に表示されるようにする */
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    overflow: auto; /* コンテンツが表示領域を超えた場合にスクロールバーを表示する */
+    background-color: rgba(0, 0, 0, 0.4); /* 背景色を半透明の黒にする */
+  }
+  
+  .dialog-content {
+    background-color: #fff; /* コンテンツの背景色を白にする */
+    margin: 15% auto; /* 上下に15%、左右にautoのマージンを設定して中央に配置する */
+    padding: 80px; /* コンテンツの内側の余白を設定する */
+    width: 30%; /* コンテンツの幅を50%にする */
+    box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2); /* コンテンツに影を付ける */
+    text-align: center; /* テキストを中央に配置する */
+  }
+
+  .dialog2-content {
+    background-color: #fff; /* コンテンツの背景色を白にする */
+    margin: 15% auto; /* 上下に15%、左右にautoのマージンを設定して中央に配置する */
+    padding: 80px; /* コンテンツの内側の余白を設定する */
+    width: 30%; /* コンテンツの幅を50%にする */
+    box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2); /* コンテンツに影を付ける */
+    text-align: center; /* テキストを中央に配置する */
+  }
+  
+  .close:hover,
+  .close:focus {
+    color: black; /* 閉じるボタンにマウスを乗せた時やフォーカスした時のテキスト色を黒にする */
+    text-decoration: none; /* テキストの下線をなくす */
+    cursor: pointer; /* マウスカーソルをポインターにする */
+  }
+  
+  #yesButton /*はいボタン*/{
+    position: absolute;
+    top: 270px; /* 上からの位置 */
+    left: 500px; /* 左からの位置 */
+    width: 150px; /* ボタンの幅 */
+    height: 55px; /* ボタンの高さ */
+    background-color: greenyellow; /* ボタンの背景色 */
+    color: #fff; /* ボタンのテキスト色 */
+    border: none; /* ボタンのボーダーをなしにする */
+    border-radius: 10px; /* ボタンの角を丸める */
+    cursor: pointer; /* マウスカーソルをポインターにする */
+    margin-top: 20px; /* 上部の余白 */
+    margin-right: 10px; /* 右側の余白 */
+    font-size: 22px; /* テキストの大きさを変更する */
+  }
+  
+  #noButton /*いいえボタン*/{
+    position: absolute;
+    top: 270px; /* 上からの位置 */
+    left: 700px; /* 左からの位置 */
+    width: 150px; /* ボタンの幅 */
+    height: 55px; /* ボタンの高さ */
+    background-color: Red; /* ボタンの背景色 */
+    color: #fff; /* ボタンのテキスト色 */
+    border: none; /* ボタンのボーダーをなしにする */
+    border-radius: 10px; /* ボタンの角を丸める */
+    cursor: pointer; /* マウスカーソルをポインターにする */
+    margin-top: 20px; /* 上部の余白 */
+    margin-right: 10px; /* 右側の余白 */
+    font-size: 22px; /* テキストの大きさを変更する */
+  }
+  #okButton /*okボタン*/{
+    position: absolute;
+    top: 270px; /* 上からの位置 */
+    left: 500px; /* 左からの位置 */
+    width: 150px; /* ボタンの幅 */
+    height: 55px; /* ボタンの高さ */
+    background-color: greenyellow; /* ボタンの背景色 */
+    color: #fff; /* ボタンのテキスト色 */
+    border: none; /* ボタンのボーダーをなしにする */
+    border-radius: 10px; /* ボタンの角を丸める */
+    cursor: pointer; /* マウスカーソルをポインターにする */
+    margin-top: 20px; /* 上部の余白 */
+    margin-right: 10px; /* 右側の余白 */
+    font-size: 22px; /* テキストの大きさを変更する */
+  }
+  
+
+  
+  

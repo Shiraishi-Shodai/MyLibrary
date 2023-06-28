@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=0.2, maximum-scale=4,user-scalable=yes">
+<!-- jsQR.jsの読み込み -->
+<script src="dist/jsQR.js"></script>
+<script>
+  var video,tmp,tmp_ctx,qr,prev,prev_ctx,w,h,m,x1,y1;
+  window.addEventListener("load",function(){
+    video=document.createElement('video');
+    video.setAttribute("autoplay","");
+    video.setAttribute("muted","");
+    video.setAttribute("playsinline","");
+    video.onloadedmetadata = function(e){video.play();};
+    prev=document.getElementById("preview");
+    prev_ctx=prev.getContext("2d");
+    tmp = document.createElement('canvas');
+    tmp_ctx = tmp.getContext("2d");
+
+    qr = document.getElementById("qr");
+    //カメラ使用の許可ダイアログが表示される
+    navigator.mediaDevices.getUserMedia(
+      //マイクはオフ, カメラの設定   できれば背面カメラ    できれば640×480
+      {"audio":false,"video":{"facingMode":"environment","width":{"ideal":640},"height":{"ideal":480}}}
+    ).then( //許可された場合
+      function(stream){
+        video.srcObject = stream;
+        //0.5秒後にスキャンする
+        setTimeout(Scan,500);
+      }
+    ).catch( //許可されなかった場合
+      function(err){qr.innerHTML=qr.innerHTML+err+'\n';}
+    );
+  });
+  function Scan(){
+    //選択された幅高さ
+    w=video.videoWidth;
+    h=video.videoHeight;
+    //画面上の表示サイズ
+    prev.style.width=(w/2)+"px";
+    prev.style.height=(h/2)+"px";
+    //内部のサイズ
+    prev.setAttribute("width",w);
+    prev.setAttribute("height",h);
+    if(w>h){m=h*0.5;}else{m=w*0.5;}
+    x1=(w-m)/2;
+    y1=(h-m)/2;
+    prev_ctx.drawImage(video,0,0,w,h);
+    prev_ctx.beginPath();
+    prev_ctx.strokeStyle="rgb(255,0,0)";
+    prev_ctx.lineWidth=2;
+    prev_ctx.rect(x1,y1,m,m);
+    prev_ctx.stroke();
+    tmp.setAttribute("width",m);
+    tmp.setAttribute("height",m);
+    tmp_ctx.drawImage(prev,x1,y1,m,m,0,0,m,m);
+    let imageData = tmp_ctx.getImageData(0,0,m,m);
+    let scanResult = jsQR(imageData.data,m,m);
+    if(scanResult){
+      //QRコードをスキャンした結果を出力
+      qr.value=qr.value+scanResult.data+'\n';
+      //わざとエラーがでます
+      window.location.href = 'http://localhost/Library/login/Login '+ qr.value; 
+      open('about:blank', '_self').close();
+    }
+    setTimeout(Scan,200);
+  }
+</script>
+
+
+</head>
+<body>
+  <p>本のQRコードをカメラ映像の赤枠内にあわせると読み取ります</p>
+  <p>本以外のQRコードを読み取るとエラーになります</p>
+  <div><canvas id="preview"></canvas></div>
+  <textarea id="qr" rows="8" cols="40"></textarea>
+</body>
+</html>

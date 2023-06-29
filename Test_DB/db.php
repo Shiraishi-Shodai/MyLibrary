@@ -5,10 +5,8 @@ require_once("User.php");
 class DAO
 {
 
-    private $host = "localhost";
     private $user = "root";
     private $pwd = "pathSQL";
-    private $dbname = "library";
     private $dsn = "mysql:host=localhost;port=3306;dbname=library;";
     private $conn;
 
@@ -21,15 +19,17 @@ class DAO
     // ログインしたユーザーの情報を取得(User型で返す)
     public function getUser($login_id): User
     {
-        $stmt = $this->conn->prepare('SELECT u.user_id, u.affiliation_id, a.affiliation_name, u.user_type_id, u.user_name, u.password
-                                        FROM `users` as u
-                                        JOIN affiliation as a
-                                        ON u.affiliation_id = a.affiliation_id
-                                        WHERE user_id = 2;');
+        $stmt = $this->conn->prepare('SELECT u.user_id, u.affiliation_id, a.affiliation_name, ut.user_type_name, u.user_type_id, u.user_name, u.password
+         FROM `users` AS u
+         LEFT JOIN affiliation AS a
+         ON u.affiliation_id = a.affiliation_id
+         LEFT JOIN user_type as ut
+         ON u.user_type_id = ut.user_type_id
+         WHERE u.user_id = :login_id');
         $stmt->bindValue(":login_id", $login_id);
-        $res = $stmt->execute();
+        $stmt->execute();
         $result = $stmt->fetch(PDO::FETCH_ASSOC);
-        $user = new User($result["user_id"], $result["user_name"], $result["affiliation_id"], $result["affiliation_name"], $result["user_type_id"], $result["password"]);
+        $user = new User($result["user_id"], $result["user_name"], $result["affiliation_id"], $result["affiliation_name"], $result["user_type_name"], $result["user_type_id"], $result["password"]);
 
         return $user;
     }
@@ -42,13 +42,12 @@ class DAO
                                         INNER JOIN lent AS l
                                         ON l.book_id = b.book_id
                                         WHERE b.affiliation_id = :affiliation_id AND l.user_id = :user_id AND l.lending_status = 'impossible'");
-        $stmt->bindValue(":login_id", $user->getUserId);
-        $stmt->bindValue(":affiliation_id", $user->getAffiliationId);
-        $res = $stmt->execute();
-        $result = $stmt->fetch(PDO::FETCH_ASSOC);
-        $myBooks = new User($result["user_id"], $result["user_id"], $result["book_id"], $result["book_name"], $result["author"], $result["publisher"], $result["remarks"], $result["image"], $result["lending_status"]);
+        $stmt->bindValue(":user_id", $user->getUserId());
+        $stmt->bindValue(":affiliation_id", $user->getAffiliationId());
+        $stmt->execute();
+        $result = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
-        return $myBooks;
+        return $result;
     }
 
     // ログインしているユーザーが借りている本の情報を取得するためのSQL文
@@ -59,12 +58,11 @@ class DAO
                                         LEFT JOIN lent AS l
                                         ON l.book_id = b.book_id
                                         WHERE b.affiliation_id = :affiliation_id");
-        $stmt->bindValue(":affiliation_id", $user->getAffiliationId);
+        $stmt->bindValue(":affiliation_id", $user->getAffiliationId());
         $res = $stmt->execute();
-        $result = $stmt->fetch(PDO::FETCH_ASSOC);
-        $AllBooks = new User($result["user_id"], $result["user_id"], $result["book_id"], $result["book_name"], $result["author"], $result["publisher"], $result["remarks"], $result["image"], $result["lending_status"]);
+        $result = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
-        return $AllBooks;
+        return $result;
     }
 
     // ログインしているユーザーが所属しているクラスの全ての貸出中の本を取得するためのSQL文
@@ -75,11 +73,11 @@ class DAO
                                             LEFT JOIN lent AS l            
                                             ON l.book_id = b.book_id           
                                             WHERE b.affiliation_id = :affiliation_id AND l.lending_status = 'impossible'");
-        $stmt->bindValue(":affiliation_id", $user->getAffiliationId);
+        $stmt->bindValue(":affiliation_id", $user->getAffiliationId());
         $res = $stmt->execute();
-        $result = $stmt->fetch(PDO::FETCH_ASSOC);
-        $lentNowBooks = new User($result["user_id"], $result["user_id"], $result["book_id"], $result["book_name"], $result["author"], $result["publisher"], $result["remarks"], $result["image"], $result["lending_status"]);
+        $result = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
-        return $lentNowBooks;
+
+        return $result;
     }
 }

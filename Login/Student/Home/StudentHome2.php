@@ -69,6 +69,7 @@ try {
     $stmt = $conn->query($sql);
     //所属しているクラス全ての本の情報を変数allBooksに配列として代入
     $lentBooks = $stmt->fetchAll(PDO::FETCH_ASSOC);
+    print("型" . $lentBooks);
     //変数allBooksをJSON化してallBooksに代入
     $lentBooks = json_encode($lentBooks);
 } catch (PDOException $e) {
@@ -141,8 +142,8 @@ try {
 
         //画像を表示する関数
         function dispImages(data) {
-            
-            
+
+
         }
 
         // 履歴ボタンがクリックされたときの処理関数

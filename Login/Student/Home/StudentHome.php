@@ -2,19 +2,29 @@
 session_start();
 
 // DAO.php,USER.phpを読み込み
-require_once("../../../../Test_DB/db.php");
-require_once("../../../../Test_DB/User.php");
-require_once("../../../../Test_DB/Book.php");
+require_once("../../../Test_DB/db.php");
+require_once("../../../Test_DB/User.php");
+require_once("../../../Test_DB/Book.php");
 
 if (!isset($_SESSION["user_id"])) {
     header("Location: login.php");
     exit;
 }
 
-
 $user_id =  $_SESSION["user_id"];
 $dao = new DAO();
 $user = $dao->getUser($user_id);
+$json_user_id = json_encode($user->getUserId());
+// クラスの本を取得
+$allBooks = $dao->getAllBooks($user);
+// 自分が借りている本を取得
+$myBooks = $dao->getMyBooks($user);
+// 貸し出し中の本を取得
+$lentBooks = $dao->getLentNowBooks($user);
+// それぞれの本をjson化
+$json_allBooks = json_encode($allBooks, JSON_UNESCAPED_UNICODE);
+$json_myBooks = json_encode($myBooks, JSON_UNESCAPED_UNICODE);
+$json_lentBooks = json_encode($lentBooks, JSON_UNESCAPED_UNICODE);
 
 ?>
 <!DOCTYPE html>
@@ -34,7 +44,7 @@ $user = $dao->getUser($user_id);
         <div id="login">
             ログイン者:<?php echo $user->getUserName() ?><br>
             区分:<?php echo $user->getAffiliationName() ?><br>
-            学科:<?php echo $user->getAffiliationName() ?>
+            学科:<?php echo $user->getUserTypeName() ?>
         </div>
     </div>
 
@@ -79,8 +89,10 @@ $user = $dao->getUser($user_id);
             return result;
         }
 
-        //画像を表示する関数
+        // 画像を表示する関数
+
         function displayImages(totalImages, imageDirectoryPath, flag) {
+
             //flagがtrueの時はimage-containerのクラスを参照,そうでないときはimage-container1を参照しsetClassに代入
             let setClass = "";
             if (flag) {
@@ -108,6 +120,7 @@ $user = $dao->getUser($user_id);
 
                 //pathに画像パスを代入
                 let path = imageDirectoryPath + totalImages[imageIndex].image;
+
                 //imgタグのsrcにpathを代入
                 imageElement.src = path;
                 let book = totalImages[imageIndex];
@@ -165,17 +178,17 @@ $user = $dao->getUser($user_id);
         //表示
         document.getElementById("search-button").addEventListener("click", searchImages);
         //PHPからJSONとして受け取ったlentNow(借りている本)をlentNowに配列として代入
-        var lentNow = <?php echo $lentNow; ?>;
+        var myBooks = <?php echo $json_myBooks; ?>;
         //PHPからJSONとして受け取ったallBooks(所属しているクラスの全ての本)をallBooksに配列として代入
-        var allBooks = <?php echo $allBooks; ?>;
+        var allBooks = <?php echo $json_allBooks; ?>;
         //PHPからJSONとして受け取ったallBooks(所属しているクラスの全ての本)をlentBooksに配列として代入
-        var lentBooks = <?php echo $lentBooks; ?>;
+        var lentBooks = <?php echo $json_lentBooks; ?>;
 
-        var user_id = <?php echo $user_id; ?>;
-        displayImages(lentNow, "../../../Image/", true);
+
+        displayImages(myBooks, "../../../Image/", true);
         displayImages(allBooks, "../../../Image/", false);
 
-        let json_user_id = <?php echo $json_user_id ?>
+        let json_user_id = <?php echo $json_user_id; ?>;
         ////貸出、返却、その他の判別
         function judge(element, totalImages, imageIndex) {
             if (element.classList.contains("grayAdd")) {
@@ -189,8 +202,7 @@ $user = $dao->getUser($user_id);
             }
         }
     </script>
-
-    <!--QRコードを読み込んで表示させる-->
+    //QRコードを読み込んで表示させる
     <script>
         var qrCodeWindow = null; // 別ウィンドウの参照を格納する変数
         function openQrCodeWindow() {

@@ -1,8 +1,8 @@
 <?php
 
 // DAO.php,USER.phpを読み込み
-require_once("../../Test_DB/db.php");
-require_once("../../Test_DB/User.php");
+require_once("../Test_DB/db.php");
+require_once("../Test_DB/User.php");
 
 $login_id = $_POST["login_id"];
 $password = $_POST["password"];
